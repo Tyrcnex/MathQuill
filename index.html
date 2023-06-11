@@ -18,6 +18,8 @@
         <div id="math-field-box">
             <span id="math-field" style="font-size: 50px;"></span>
         </div>
+        <div style="height: 5px;"></div>
+        <button id="undo">Undo</button>
         <div style="height: 200px;"></div>
         <div id="latex-box">
             <textarea id="latex"></textarea>
@@ -27,28 +29,54 @@
     </div>
 
     <script>
+        let history = [''];
         let mathFieldSpan = document.getElementById('math-field');
         let latexTextarea = document.getElementById('latex');
         let latexToMathQuill = document.getElementById('latex-to-mathquill');
         let copyButton = document.getElementById('copy');
+        let undoButton = document.getElementById('undo');
+        let wasUndo = false;
+        let isFocus = false;
 
-        let MQ = MathQuill.getInterface(2); // for backcompat
+        let MQ = MathQuill.getInterface(2);
         let mathField = MQ.MathField(mathFieldSpan, {
-            spaceBehavesLikeTab: true, // configurable
             handlers: {
-                edit: function() { // useful event handlers
-                    latexTextarea.value = mathField.latex(); // simple API
+                edit: function() {
+                    latexTextarea.value = mathField.latex().replaceAll('\\ ','');
+                    if (!wasUndo) addHistory();
                 }
             }
         });
 
         latexToMathQuill.onclick = () => {
             mathField.latex(latexTextarea.value);
+            addHistory();
         }
 
         copyButton.onclick = () => {
             navigator.clipboard.writeText(latexTextarea.value);
         }
+
+        const addHistory = () => {
+            if(history[history.length-1] !== latexTextarea.value) history.push(latexTextarea.value);
+            console.log(history);
+        }
+        const undo = () => {
+            if (history.length < 2) return;
+            wasUndo = true;
+            console.log(history);
+            mathField.latex(history[history.length-2]);
+            history = history.slice(0,-1);
+            wasUndo = false;
+        }
+
+        mathFieldSpan.addEventListener("focusin", () => { isFocus = true; })
+        mathFieldSpan.addEventListener("focusout", () => { isFocus = false; })
+        document.addEventListener("keydown", e => {
+            if (isFocus && (e.metaKey || e.ctrlKey) && e.keyCode == 90) undo();
+        })
+
+        undoButton.onclick = undo;
     </script>
 </body>
 </html>
