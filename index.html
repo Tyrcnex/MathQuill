@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MathQuill Editor (Tyrcnex)</title>
+
+    <!--MathQuill-->
+    <link rel="stylesheet" href="./mathquill.css"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script src="./mathquill.js"></script>
+
+    <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+    <div style="height: 50px;"></div>
+    <div id="main" style="width: 100vw; text-align: center;">
+        <span id="math-field" style="font-size: 50px;"></span>
+        <div style="height: 200px;"></div>
+        <div id="latex-box">
+            <textarea id="latex"></textarea>
+        </div>
+        <button id="latex-to-mathquill">Latex to MathQuill</button>
+        <button id="copy">Copy</button>
+    </div>
+
+    <script>
+        let mathFieldSpan = document.getElementById('math-field');
+        let latexTextarea = document.getElementById('latex');
+        let latexToMathQuill = document.getElementById('latex-to-mathquill');
+        let copyButton = document.getElementById('copy');
+
+        let MQ = MathQuill.getInterface(2); // for backcompat
+        let mathField = MQ.MathField(mathFieldSpan, {
+            spaceBehavesLikeTab: true, // configurable
+            handlers: {
+                edit: function() { // useful event handlers
+                    latexTextarea.value = mathField.latex(); // simple API
+                }
+            }
+        });
+
+        latexToMathQuill.onclick = () => {
+            mathField.latex(latexTextarea.value);
+        }
+
+        copyButton.onclick = () => {
+            navigator.clipboard.writeText(latexTextarea.value);
+        }
+    </script>
+</body>
+</html>
