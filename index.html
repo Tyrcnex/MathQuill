@@ -17,6 +17,7 @@
     <div id="main" style="width: 100vw; text-align: center;">
         <div id="math-field-box">
             <span id="math-field" style="font-size: 50px;"></span>
+            <div id="math-field-gradient"></div>
         </div>
         <div style="height: 5px;"></div>
         <button id="undo">Undo</button>
@@ -31,12 +32,16 @@
     <script>
         let history = [''];
         let mathFieldSpan = document.getElementById('math-field');
+        let mathFieldBox = document.getElementById('math-field-box');
+        let mathFieldGradient = document.getElementById('math-field-gradient');
         let latexTextarea = document.getElementById('latex');
         let latexToMathQuill = document.getElementById('latex-to-mathquill');
         let copyButton = document.getElementById('copy');
         let undoButton = document.getElementById('undo');
         let wasUndo = false;
         let isFocus = false;
+        const adjustGradientHeight = () => mathFieldGradient.style.height = (mathFieldSpan.clientHeight + 20) + 'px';
+        setTimeout(adjustGradientHeight, 10);
 
         let MQ = MathQuill.getInterface(2);
         let mathField = MQ.MathField(mathFieldSpan, {
@@ -44,6 +49,7 @@
                 edit: function() {
                     latexTextarea.value = mathField.latex().replaceAll('\\ ','');
                     if (!wasUndo) addHistory();
+                    adjustGradientHeight();
                 }
             }
         });
