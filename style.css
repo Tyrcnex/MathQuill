@@ -13,9 +13,25 @@ p {
 }
 
 #math-field-box {
-    width: 100%;
+    width: 90%;
+    margin: 0 auto;
     overflow-x: scroll;
     overflow-y: auto;
+}
+
+#math-field {
+    z-index: -20;
+}
+
+#math-field-gradient {
+    position: absolute;
+    top: 50px;
+    width: 95%;
+    margin: 0 auto;
+    transform: translateX(-3px);
+    pointer-events: none;
+    background: linear-gradient(90deg, white 2%, rgba(255, 255, 255, 0) 10%, rgba(255, 255, 255, 0) 90%, white 98%);
+    z-index: 500;
 }
 
 button {
