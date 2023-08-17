@@ -10,14 +10,15 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
     <script src="./mathquill.js"></script>
 
-	<script type="text/x-mathjax-config">MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});</script>
-	<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/x-mathjax-config">MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});</script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
     <link rel="stylesheet" href="./style.css">
 </head>
 <body>
     <div style="height: 50px;"></div>
     <div id="main" style="width: 100vw; text-align: center;">
+        <div style="height: 200px"></div>
         <div id="math-field-box">
             <span id="math-field" style="font-size: 50px;"></span>
             <div id="math-field-gradient"></div>
@@ -32,9 +33,10 @@
         <button id="copy">Copy</button>
     </div>
 
-	\[x^2+2\]
+    <div id="poop"></div>
 
     <script>
+        MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
         let history = [''];
         let mathFieldSpan = document.getElementById('math-field');
         let mathFieldBox = document.getElementById('math-field-box');
@@ -43,6 +45,7 @@
         let latexToMathQuill = document.getElementById('latex-to-mathquill');
         let copyButton = document.getElementById('copy');
         let undoButton = document.getElementById('undo');
+        let poop = document.getElementsByTagName('div')[0];
         let wasUndo = false;
         let isFocus = false;
         const adjustGradientHeight = () => mathFieldGradient.style.height = (mathFieldSpan.clientHeight + 20) + 'px';
@@ -54,7 +57,9 @@
 	    autoOperatorNames: 'arccos arcosh arcoth arcsch arcsin arctan arcsec arccsc arccot arsech arsinh artanh arg ceil cos cosh cot coth csc det dim dist exp floor gcd lcm length lim ln log max mean median min mod round sec sech sin sinh tan tanh total',
             handlers: {
                 edit: function() {
-                    latexTextarea.value = mathField.latex().replaceAll('\\ ','');
+                    latexTextarea.value = mathField.latex();
+                    poop.textContent = `\\[${latexTextarea.value}\\]`;
+                    MathJax.Hub.Typeset();
                     if (!wasUndo) addHistory();
                     adjustGradientHeight();
                 }
